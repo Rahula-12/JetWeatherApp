@@ -1,6 +1,6 @@
 package com.example.jetweatherforecast.screens
 
-import android.content.res.Resources.Theme
+import android.view.animation.OvershootInterpolator
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -12,17 +12,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.jetweatherforecast.R
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.LaunchedEffect
+import com.example.jetweatherforecast.navigation.WeatherScreens
+import kotlinx.coroutines.delay
 
 @Preview
 @Composable
@@ -30,6 +34,25 @@ fun WeatherSplashScreen(
     navController: NavController= rememberNavController(),
     modifier: Modifier=Modifier
 ) {
+
+    val scale= remember {
+        Animatable(0f)
+    }
+
+    LaunchedEffect(key1 = true, block = {
+        scale.animateTo(
+            targetValue = 0.9f,
+            animationSpec = tween(
+                durationMillis = 800,
+                easing = {
+                    OvershootInterpolator(8f).getInterpolation(it)
+                }
+            )
+        )
+        delay(2000)
+        navController.navigate(WeatherScreens.MainScreen.name)
+    })
+
     Surface(
         shape = CircleShape,
         border = BorderStroke(2.dp, color = Color.Gray),
