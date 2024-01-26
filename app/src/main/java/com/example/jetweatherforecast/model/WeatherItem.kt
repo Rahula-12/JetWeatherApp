@@ -1,6 +1,6 @@
 package com.example.jetweatherforecast.model
 
-data class WeatherObject(
+data class WeatherItem(
     val clouds: Int,
     val deg: Int,
     val dt: Int,
@@ -14,5 +14,5 @@ data class WeatherObject(
     val sunrise: Int,
     val sunset: Int,
     val temp: Temp,
-    val weather: List<WeatherX>
+    val weather: List<WeatherObject>
 )
