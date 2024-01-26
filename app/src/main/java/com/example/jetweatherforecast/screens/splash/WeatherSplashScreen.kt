@@ -1,4 +1,4 @@
-package com.example.jetweatherforecast.screens
+package com.example.jetweatherforecast.screens.splash
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.foundation.BorderStroke
