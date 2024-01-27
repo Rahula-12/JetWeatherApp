@@ -2,6 +2,7 @@ package com.example.jetweatherforecast.screens.main
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,9 +15,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: WeatherRepository):ViewModel(){
-    val dataOrException:MutableState<DataOrException<Weather,Boolean,Exception>> = mutableStateOf(
-        DataOrException(data = null,loading = true, exception = Exception("")))
-
+    private val _dataOrException:MutableState<DataOrException<Weather,Boolean,Exception>> = mutableStateOf(
+        DataOrException(data = null,loading = true, exception = Exception(""))
+    )
+    val dataOrException:State<DataOrException<Weather,Boolean,Exception>> = _dataOrException
     init {
         getWeather("Amritsar")
     }
@@ -24,10 +26,11 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
     private fun getWeather(cityQuery:String) {
         viewModelScope.launch {
             if(cityQuery.isEmpty()) return@launch
-            dataOrException.value.loading=true
-            dataOrException.value=repository.getWeather(cityQuery)
-            if(!dataOrException.value.data.toString().isNullOrEmpty()) dataOrException.value.loading=false
+            _dataOrException.value.loading=true
+            _dataOrException.value=repository.getWeather(cityQuery)
+            if(!_dataOrException.value.data.toString().isNullOrEmpty()) _dataOrException.value.loading=false
+            Log.d("ScopeData",_dataOrException.value.data.toString())
         }
-        Log.d("Temp",dataOrException.value.data.toString())
+        Log.d("ViewModelData",_dataOrException.value.data.toString())
     }
 }

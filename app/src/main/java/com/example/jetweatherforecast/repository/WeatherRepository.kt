@@ -1,5 +1,6 @@
 package com.example.jetweatherforecast.repository
 
+import android.util.Log
 import com.example.jetweatherforecast.data.DataOrException
 import com.example.jetweatherforecast.model.Weather
 import com.example.jetweatherforecast.network.WeatherApi
@@ -13,10 +14,12 @@ class WeatherRepository @Inject constructor(
             weatherApi.getWeather(query)
         }
         catch (e:Exception) {
-            return DataOrException<Weather,Boolean,Exception>(
+            Log.d("Repo",e.toString())
+            return DataOrException(
                 exception = e
             )
         }
+        Log.d("Data",response.toString())
         return DataOrException(data = response,loading = false)
     }
 }
