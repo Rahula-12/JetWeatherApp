@@ -15,22 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: WeatherRepository):ViewModel(){
-    private val _dataOrException:MutableState<DataOrException<Weather,Boolean,Exception>> = mutableStateOf(
-        DataOrException(data = null,loading = true, exception = Exception(""))
-    )
-    val dataOrException:State<DataOrException<Weather,Boolean,Exception>> = _dataOrException
-    init {
-        getWeather("Amritsar")
-    }
 
-    private fun getWeather(cityQuery:String) {
-        viewModelScope.launch {
-            if(cityQuery.isEmpty()) return@launch
-            _dataOrException.value.loading=true
-            _dataOrException.value=repository.getWeather(cityQuery)
-            if(!_dataOrException.value.data.toString().isNullOrEmpty()) _dataOrException.value.loading=false
-            Log.d("ScopeData",_dataOrException.value.data.toString())
-        }
-        Log.d("ViewModelData",_dataOrException.value.data.toString())
+    suspend fun getWeather(cityQuery:String):DataOrException<Weather,Boolean,Exception> {
+        return repository.getWeather(cityQuery)
     }
 }
