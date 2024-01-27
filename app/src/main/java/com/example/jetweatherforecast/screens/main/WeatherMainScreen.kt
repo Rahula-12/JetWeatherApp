@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.jetweatherforecast.data.DataOrException
@@ -32,17 +33,18 @@ fun WeatherMainScreen(
         CircularProgressIndicator()
     }
     else if(weather.data!=null){
-        MainScaffold(weather.data!!)
+        MainScaffold(weather.data!!,navController)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScaffold(weather:Weather) {
+private fun MainScaffold(weather:Weather,navController: NavController) {
     Scaffold(
         topBar = {
-            WeatherAppBar(title = weather.city.name)
+            WeatherAppBar(title = "${weather.city.name}, ${weather.city.country}", elevation = 5.dp, navController=navController)
         }
+
     ) {
         MainContent(data=weather,modifier=Modifier.padding(it))
     }
@@ -50,5 +52,5 @@ private fun MainScaffold(weather:Weather) {
 
 @Composable
 fun MainContent(data: Weather,modifier: Modifier=Modifier) {
-    Text(text = data.city.name)
+//    Text(text = data.city.name)
 }
