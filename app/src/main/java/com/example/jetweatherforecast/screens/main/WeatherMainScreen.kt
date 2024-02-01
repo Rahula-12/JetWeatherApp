@@ -1,13 +1,9 @@
 package com.example.jetweatherforecast.screens.main
 
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.ImageView
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,24 +20,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
 import com.example.jetweatherforecast.data.DataOrException
 import com.example.jetweatherforecast.model.Weather
+import com.example.jetweatherforecast.utils.formatDate
+import com.example.jetweatherforecast.utils.formatDecimals
 import com.example.jetweatherforecast.widgets.WeatherAppBar
 
 @Composable
@@ -50,7 +41,7 @@ fun WeatherMainScreen(
     mainViewModel: MainViewModel= hiltViewModel()
 ){
     val weather= produceState(initialValue = DataOrException<Weather,Boolean,Exception>(), producer = {
-        value=mainViewModel.getWeather("Jalandhar")
+        value=mainViewModel.getWeather("Amritsar")
     }).value
     if(weather.loading == true){
         CircularProgressIndicator()
@@ -85,26 +76,26 @@ fun MainContent(data: Weather,modifier: Modifier=Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text="Jan 29",
+            text= formatDate(data.list[0].dt),
             style=MaterialTheme.typography.titleSmall,
             color=MaterialTheme.colorScheme.onSecondary,
             fontWeight = FontWeight.SemiBold,
-            modifier = modifier.padding(6.dp)
+            modifier = modifier.padding(2.dp)
         )
         Surface(
             color = Color(0xFFFFC400),
             shape = CircleShape,
             modifier = modifier
                 .size(220.dp)
-                .padding(4.dp)
+                .padding(2.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 WeatherImage(weatherImageUrl)
-                Text(text="56", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Color.Black)
-                Text(text="Snow", style = MaterialTheme.typography.headlineMedium, fontStyle = FontStyle.Italic)
+                Text(text= formatDecimals(data.list[0].temp.day)+"°", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Color.Black)
+                Text(text=data.list[0].weather[0].description, style = MaterialTheme.typography.headlineMedium, fontStyle = FontStyle.Italic)
             }
         }
     }
@@ -124,6 +115,14 @@ private fun WeatherImage(weatherImageUrl: String="https://openweathermap.org/img
         ImageView(context)
     }
     Glide.with(context).load(weatherImageUrl).into(imageView)
-    AndroidView(factory = {imageView})
+//    Surface(
+//        shape = CircleShape,
+//        modifier = Modifier.size(10.dp)
+//    ) {
+        AndroidView(
+            factory = {imageView},
+            modifier = Modifier.size(100.dp)
+        )
+//    }
 }
 
