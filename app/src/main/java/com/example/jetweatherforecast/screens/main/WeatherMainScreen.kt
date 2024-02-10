@@ -2,6 +2,7 @@ package com.example.jetweatherforecast.screens.main
 
 import android.util.Log
 import android.widget.ImageView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ import com.example.jetweatherforecast.R
 import com.example.jetweatherforecast.data.DataOrException
 import com.example.jetweatherforecast.model.Weather
 import com.example.jetweatherforecast.utils.formatDate
+import com.example.jetweatherforecast.utils.formatDateTime
 import com.example.jetweatherforecast.utils.formatDecimals
 import com.example.jetweatherforecast.widgets.WeatherAppBar
 
@@ -77,7 +79,8 @@ fun MainContent(data: Weather,modifier: Modifier=Modifier) {
     Log.d("url",weatherImageUrl)
     Column(
         modifier = modifier
-            .fillMaxWidth().padding(top = 60.dp),
+            .fillMaxWidth()
+            .padding(top = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -108,6 +111,7 @@ fun MainContent(data: Weather,modifier: Modifier=Modifier) {
         }
         HumidityWindPressureRow(data)
         Divider()
+        SunriseAndSunsetRow(data.list[0].sunrise,data.list[0].sunset)
     }
 }
 
@@ -166,5 +170,22 @@ private fun WeatherImage(weatherImageUrl: String="https://openweathermap.org/img
             modifier = Modifier.size(80.dp)
         )
 //    }
+}
+
+@Composable
+fun SunriseAndSunsetRow(sunrise:Int,sunset:Int,modifier: Modifier=Modifier){
+    Row(
+        modifier=modifier.fillMaxWidth().padding(start = 5.dp,end=5.dp,top=10.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+            Row {
+                Image(painter = painterResource(id = R.drawable.sunrise), contentDescription = "sunrise", modifier = modifier.size(30.dp))
+                Text(text = formatDateTime(sunrise))
+            }
+            Row {
+                Text(text = formatDateTime(sunset))
+                Image(painter = painterResource(id = R.drawable.sunset), contentDescription = "sunset", modifier = modifier.size(30.dp))
+            }
+    }
 }
 
