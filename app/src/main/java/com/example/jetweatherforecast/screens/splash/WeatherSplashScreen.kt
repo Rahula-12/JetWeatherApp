@@ -56,14 +56,14 @@ fun WeatherSplashScreen(
     Surface(
         shape = CircleShape,
         border = BorderStroke(2.dp, color = Color.Gray),
-        modifier = modifier.size(200.dp)
+        modifier = modifier.size(300.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(painter = painterResource(id = R.drawable.sun),
-                contentDescription = "sun")
+            Image(painter = painterResource(id = R.drawable.sunrise),
+                contentDescription = "sunrise")
             Text(
                 text = "Find the Sun?",
                 modifier=modifier.padding(10.dp),

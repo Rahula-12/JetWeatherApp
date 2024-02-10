@@ -43,7 +43,7 @@ fun WeatherAppBar(
             title = {
                 Text(
                     text = title,
-                    color = MaterialTheme.colorScheme.onSecondary,
+                    color = Color.Black,
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp
                 )
