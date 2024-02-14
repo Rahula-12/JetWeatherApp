@@ -3,13 +3,17 @@ package com.example.jetweatherforecast.screens.main
 import android.util.Log
 import android.widget.ImageView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,11 +27,18 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -37,10 +48,15 @@ import com.bumptech.glide.Glide
 import com.example.jetweatherforecast.R
 import com.example.jetweatherforecast.data.DataOrException
 import com.example.jetweatherforecast.model.Weather
+import com.example.jetweatherforecast.model.WeatherItem
 import com.example.jetweatherforecast.utils.formatDate
 import com.example.jetweatherforecast.utils.formatDateTime
 import com.example.jetweatherforecast.utils.formatDecimals
+import com.example.jetweatherforecast.widgets.HumidityWindPressureRow
+import com.example.jetweatherforecast.widgets.SunriseAndSunsetRow
 import com.example.jetweatherforecast.widgets.WeatherAppBar
+import com.example.jetweatherforecast.widgets.WeatherImage
+import com.example.jetweatherforecast.widgets.WeekDetailsColumn
 
 @Composable
 fun WeatherMainScreen(
@@ -87,7 +103,7 @@ fun MainContent(data: Weather,modifier: Modifier=Modifier) {
         Text(
             text= formatDate(data.list[0].dt),
             style=MaterialTheme.typography.titleSmall,
-            color=Color.Black,
+            color=MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.SemiBold,
             modifier = modifier.padding(
                 top=20.dp,
@@ -112,80 +128,7 @@ fun MainContent(data: Weather,modifier: Modifier=Modifier) {
         HumidityWindPressureRow(data)
         Divider()
         SunriseAndSunsetRow(data.list[0].sunrise,data.list[0].sunset)
-    }
-}
-
-@Composable
-private fun HumidityWindPressureRow(data: Weather) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row {
-            Icon(
-                painter = painterResource(id = R.drawable.humidity),
-                contentDescription = "humidity icon", modifier = Modifier.size(20.dp)
-            )
-            Text(text = " ${data.list[0].humidity}%", style = MaterialTheme.typography.bodySmall)
-        }
-        Row {
-            Icon(
-                painter = painterResource(id = R.drawable.pressure),
-                contentDescription = "pressure icon", modifier = Modifier.size(20.dp)
-            )
-            Text(text = " ${data.list[0].pressure} psi", style = MaterialTheme.typography.bodySmall)
-        }
-        Row {
-            Icon(
-                painter = painterResource(id = R.drawable.wind),
-                contentDescription = "wind icon", modifier = Modifier.size(20.dp)
-            )
-            Text(text = " ${data.list[0].speed} mph", style = MaterialTheme.typography.bodySmall)
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun WeatherImage(weatherImageUrl: String="https://openweathermap.org/img/wn/01d.png") {
-//    Surface(
-//        shape = CircleShape,
-//        modifier = Modifier.size(10.dp)
-//    ) {
-//        AsyncImage(model = weatherImageUrl, contentDescription = "weather image")
-//    }
-    val context= LocalContext.current
-    val imageView= remember {
-        ImageView(context)
-    }
-    Glide.with(context).load(weatherImageUrl).into(imageView)
-//    Surface(
-//        shape = CircleShape,
-//        modifier = Modifier.size(10.dp)
-//    ) {
-        AndroidView(
-            factory = {imageView},
-            modifier = Modifier.size(80.dp)
-        )
-//    }
-}
-
-@Composable
-fun SunriseAndSunsetRow(sunrise:Int,sunset:Int,modifier: Modifier=Modifier){
-    Row(
-        modifier=modifier.fillMaxWidth().padding(start = 5.dp,end=5.dp,top=10.dp, bottom = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-            Row {
-                Image(painter = painterResource(id = R.drawable.sunrise), contentDescription = "sunrise", modifier = modifier.size(30.dp))
-                Text(text = formatDateTime(sunrise))
-            }
-            Row {
-                Text(text = formatDateTime(sunset))
-                Image(painter = painterResource(id = R.drawable.sunset), contentDescription = "sunset", modifier = modifier.size(30.dp))
-            }
+        WeekDetailsColumn(weekDetails = data.list)
     }
 }
 
