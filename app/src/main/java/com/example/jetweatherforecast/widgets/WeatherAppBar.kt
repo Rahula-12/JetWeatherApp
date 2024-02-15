@@ -1,6 +1,7 @@
 package com.example.jetweatherforecast.widgets
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -45,18 +47,20 @@ fun WeatherAppBar(
                     text = title,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
+                    modifier=Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
             },
             actions = {
                       if(isMainScreen){
-                          IconButton(onClick = { /*TODO*/ }) {
+                          IconButton(onClick = onAddActionClicked) {
                               Icon(
                                   imageVector = Icons.Default.Search,
                                   contentDescription = "Search Icon"
                               )
                           }
-                          IconButton(onClick = { /*TODO*/ }) {
+                          IconButton(onClick = onButtonClicked) {
                               Icon(imageVector = Icons.Default.MoreVert,
                                   contentDescription = "More options")
                           }
