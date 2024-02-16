@@ -24,11 +24,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.jetweatherforecast.navigation.WeatherScreens
 import com.example.jetweatherforecast.widgets.WeatherAppBar
 import retrofit2.http.Query
 
@@ -50,8 +52,15 @@ fun SearchScreen(modifier: Modifier=Modifier,navController: NavController) {
         }
     ) {it->
         Surface {
-            Column {
-
+            Column(modifier = modifier.padding(
+                top=50.dp
+            )) {
+                SearchBar(
+                    modifier = modifier.fillMaxWidth().padding(16.dp),
+                    onSearch = {city->
+                        navController.navigate(WeatherScreens.MainScreen.name+"/$city")
+                    }
+                )
             }
         }
     }
@@ -59,15 +68,21 @@ fun SearchScreen(modifier: Modifier=Modifier,navController: NavController) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchBar(onSearch:(String)->Unit={}) {
+fun SearchBar(modifier: Modifier,onSearch:(String)->Unit={}) {
     val searchQueryState= rememberSaveable { mutableStateOf("") }
     val keyboardController=LocalSoftwareKeyboardController.current
-    val valid= remember(searchQueryState.value, searchQueryState.value.trim()::isNotBlank)
-    Column() {
+    val valid= remember(searchQueryState.value){
+        searchQueryState.value.trim().isNotEmpty()
+    }
+    Column(modifier = modifier) {
         CommonTextField(
             valueState=searchQueryState,
             placeholder="Amritsar",
-            onAction= KeyboardActions {  }
+            onAction= KeyboardActions { if(!valid)  return@KeyboardActions
+                onSearch(searchQueryState.value.trim())
+                keyboardController?.hide()
+                searchQueryState.value=""
+            }
         )
     }
 }
