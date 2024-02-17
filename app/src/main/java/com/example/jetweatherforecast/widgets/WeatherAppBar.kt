@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.jetweatherforecast.navigation.WeatherScreens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +62,7 @@ fun WeatherAppBar(
         mutableStateOf(false)
     }
     if(showDialog.value){
-        ShowDropDownMenu(showDialog)
+        ShowDropDownMenu(showDialog, navController)
     }
     Surface(shape= RectangleShape,shadowElevation=elevation) {
         TopAppBar(
@@ -109,7 +110,7 @@ fun WeatherAppBar(
 }
 
 @Composable
-fun ShowDropDownMenu(showDialog:MutableState<Boolean>){
+fun ShowDropDownMenu(showDialog:MutableState<Boolean>,navController: NavController){
     val iconList:List<ImageVector> = listOf(Icons.Default.FavoriteBorder,Icons.Default.Settings,Icons.Rounded.Info)
     val descriptions:List<String> = listOf("Favourites","Settings","About")
     Column(
@@ -138,7 +139,11 @@ fun ShowDropDownMenu(showDialog:MutableState<Boolean>){
                         text = s,
                         color=Color.Gray,
                         modifier = Modifier.weight(2f).clickable {
-
+                            when(index) {
+                                0->navController.navigate(WeatherScreens.AboutScreen.name)
+                                1->navController.navigate(WeatherScreens.AboutScreen.name)
+                                else->navController.navigate(WeatherScreens.AboutScreen.name)
+                            }
                         }
                         )
                 }
