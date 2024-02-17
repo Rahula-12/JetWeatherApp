@@ -1,11 +1,13 @@
 package com.example.jetweatherforecast.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.jetweatherforecast.screens.about.AboutScreen
 import com.example.jetweatherforecast.screens.main.WeatherMainScreen
 import com.example.jetweatherforecast.screens.search.SearchScreen
 import com.example.jetweatherforecast.screens.splash.WeatherSplashScreen
@@ -27,6 +29,9 @@ fun WeatherNavigation() {
         }
         composable(WeatherScreens.SearchScreen.name){
             SearchScreen(navController=navController)
+        }
+        composable(WeatherScreens.AboutScreen.name){
+            AboutScreen(modifier = Modifier,navController)
         }
     }
 }
