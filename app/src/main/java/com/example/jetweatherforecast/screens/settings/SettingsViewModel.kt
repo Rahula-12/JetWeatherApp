@@ -37,4 +37,10 @@ class SettingsViewModel @Inject constructor(private val weatherDBRepository: Wea
             weatherDBRepository.insertMeasurement(measurement)
         }
     }
+
+    fun deleteAllMeasurements() {
+        viewModelScope.launch {
+            weatherDBRepository.deleteAllMeasurements()
+        }
+    }
 }

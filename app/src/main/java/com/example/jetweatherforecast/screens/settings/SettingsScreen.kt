@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Scaffold
@@ -22,8 +25,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.jetweatherforecast.model.Measurement
 import com.example.jetweatherforecast.widgets.WeatherAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +75,25 @@ fun SettingsScreen(
                             Color.Magenta.copy(alpha = 0.5f)
                         )) {
                             Text(text = if(unitToggleState.value) "Fahrenheit °F" else "Celsius °C")
+                }
+                Button(onClick = {
+                                 settingsViewModel.deleteAllMeasurements()
+                    settingsViewModel.insertMeasurement(measurement = Measurement(choiceState.value))
+                                 }
+                , modifier = Modifier
+                        .padding(3.dp)
+                        .align(Alignment.CenterHorizontally),
+                    shape = RoundedCornerShape(34.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFEFBE42)
+                    )
+                ) {
+                    Text(
+                        text="Save",
+                        modifier = Modifier.padding(4.dp),
+                        color = Color.White,
+                        fontSize = 17.sp
+                    )
                 }
             }
         }
