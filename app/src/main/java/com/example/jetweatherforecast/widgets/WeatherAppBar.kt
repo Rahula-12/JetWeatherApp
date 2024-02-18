@@ -1,7 +1,9 @@
 package com.example.jetweatherforecast.widgets
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absolutePadding
@@ -27,6 +29,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -57,6 +61,9 @@ fun WeatherAppBar(
     navController: NavController,
     onButtonClicked:()->Unit={},
 ){
+    val showToast= remember {
+        mutableStateOf(false)
+    }
     val showDialog= remember {
         mutableStateOf(false)
     }
@@ -100,15 +107,30 @@ fun WeatherAppBar(
                              )
                      }
                 if(isMainScreen){
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = null,
-                        tint = Color.Red.copy(alpha = 0.6f),
-                        modifier = Modifier.clickable {
-                            val cityAndCountry=title.split(", ")
-                            favouriteViewModel.insertFavourite(Favourite(cityAndCountry[0],cityAndCountry[1]))
-                        }
-                    )
+                    val cityAndCountry=title.split(", ")
+                    val isPresent=favouriteViewModel.favouriteList.collectAsState().value.filter {
+                        it.city==cityAndCountry[0]
+                    }
+                    if(isPresent.isNullOrEmpty()) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = Color.Red.copy(alpha = 0.6f),
+                            modifier = Modifier.clickable {
+                                favouriteViewModel.insertFavourite(
+                                    Favourite(
+                                        cityAndCountry[0],
+                                        cityAndCountry[1]
+                                    )
+                                ).run {
+                                    showToast.value=true
+                                }
+                            }
+                        )
+                    }
+                    else {showToast.value=false
+                        Box{}}
+                    if(showToast.value) Toast.makeText(LocalContext.current,"Added to Favourites",Toast.LENGTH_SHORT).show()
                 }
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
