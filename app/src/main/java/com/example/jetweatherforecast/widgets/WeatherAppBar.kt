@@ -1,7 +1,5 @@
 package com.example.jetweatherforecast.widgets
 
-import android.graphics.drawable.Icon
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -26,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -37,20 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.jetweatherforecast.MainActivity
 import com.example.jetweatherforecast.model.Favourite
 import com.example.jetweatherforecast.navigation.WeatherScreens
 import com.example.jetweatherforecast.screens.favourite.FavouriteViewModel
@@ -64,8 +54,8 @@ fun WeatherAppBar(
     isMainScreen:Boolean=true,
     elevation: Dp =0.dp,
     onAddActionClicked:()->Unit={},
+    navController: NavController,
     onButtonClicked:()->Unit={},
-    navController: NavController
 ){
     val showDialog= remember {
         mutableStateOf(false)
@@ -162,7 +152,7 @@ fun ShowDropDownMenu(showDialog:MutableState<Boolean>,navController: NavControll
                             .weight(2f)
                             .clickable {
                                 when (index) {
-                                    0 -> navController.navigate(WeatherScreens.AboutScreen.name)
+                                    0 -> navController.navigate(WeatherScreens.FavouriteScreen.name)
                                     1 -> navController.navigate(WeatherScreens.AboutScreen.name)
                                     else -> navController.navigate(WeatherScreens.AboutScreen.name)
                                 }
