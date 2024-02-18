@@ -1,18 +1,18 @@
 package com.example.jetweatherforecast.screens.favourite
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetweatherforecast.model.Favourite
 import com.example.jetweatherforecast.repository.WeatherDBRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class FavouriteViewModel @Inject constructor(private val weatherDBRepository: WeatherDBRepository):ViewModel() {
     private val _favouriteList:MutableStateFlow<List<Favourite>> = MutableStateFlow(emptyList())
     val favouriteList=_favouriteList.asStateFlow()

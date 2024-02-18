@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,12 +46,19 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.jetweatherforecast.MainActivity
+import com.example.jetweatherforecast.model.Favourite
 import com.example.jetweatherforecast.navigation.WeatherScreens
+import com.example.jetweatherforecast.screens.favourite.FavouriteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherAppBar(
+    favouriteViewModel: FavouriteViewModel= hiltViewModel(),
     title: String="Title",
     icon:ImageVector?=null,
     isMainScreen:Boolean=true,
@@ -100,6 +109,17 @@ fun WeatherAppBar(
                              }
                              )
                      }
+                if(isMainScreen){
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = null,
+                        tint = Color.Red.copy(alpha = 0.6f),
+                        modifier = Modifier.clickable {
+                            val cityAndCountry=title.split(", ")
+                            favouriteViewModel.insertFavourite(Favourite(cityAndCountry[0],cityAndCountry[1]))
+                        }
+                    )
+                }
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
                 containerColor = Color.Transparent,
@@ -138,13 +158,15 @@ fun ShowDropDownMenu(showDialog:MutableState<Boolean>,navController: NavControll
                     Text(
                         text = s,
                         color=Color.Gray,
-                        modifier = Modifier.weight(2f).clickable {
-                            when(index) {
-                                0->navController.navigate(WeatherScreens.AboutScreen.name)
-                                1->navController.navigate(WeatherScreens.AboutScreen.name)
-                                else->navController.navigate(WeatherScreens.AboutScreen.name)
+                        modifier = Modifier
+                            .weight(2f)
+                            .clickable {
+                                when (index) {
+                                    0 -> navController.navigate(WeatherScreens.AboutScreen.name)
+                                    1 -> navController.navigate(WeatherScreens.AboutScreen.name)
+                                    else -> navController.navigate(WeatherScreens.AboutScreen.name)
+                                }
                             }
-                        }
                         )
                 }
             }
