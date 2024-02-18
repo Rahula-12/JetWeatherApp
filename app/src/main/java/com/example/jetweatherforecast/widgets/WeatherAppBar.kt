@@ -175,7 +175,7 @@ fun ShowDropDownMenu(showDialog:MutableState<Boolean>,navController: NavControll
                             .clickable {
                                 when (index) {
                                     0 -> navController.navigate(WeatherScreens.FavouriteScreen.name)
-                                    1 -> navController.navigate(WeatherScreens.AboutScreen.name)
+                                    1 -> navController.navigate(WeatherScreens.SettingsScreen.name)
                                     else -> navController.navigate(WeatherScreens.AboutScreen.name)
                                 }
                             }

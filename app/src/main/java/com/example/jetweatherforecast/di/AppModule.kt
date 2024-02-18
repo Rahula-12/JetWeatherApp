@@ -2,6 +2,7 @@ package com.example.jetweatherforecast.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
 import com.example.jetweatherforecast.data.WeatherDatabase
 import com.example.jetweatherforecast.network.WeatherApi
 import com.example.jetweatherforecast.utils.Constants
@@ -37,6 +38,8 @@ class AppModule {
         context,
         WeatherDatabase::class.java,
         "weather_db"
-        ).build()
+        ).
+        fallbackToDestructiveMigration().
+    build()
 
 }
