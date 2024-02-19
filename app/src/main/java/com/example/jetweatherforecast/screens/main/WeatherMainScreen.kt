@@ -15,7 +15,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,13 +28,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.jetweatherforecast.MainActivity
 import com.example.jetweatherforecast.data.DataOrException
 import com.example.jetweatherforecast.model.Weather
 import com.example.jetweatherforecast.navigation.WeatherScreens
 import com.example.jetweatherforecast.screens.favourite.FavouriteViewModel
+import com.example.jetweatherforecast.screens.settings.SettingsViewModel
 import com.example.jetweatherforecast.utils.formatDate
 import com.example.jetweatherforecast.utils.formatDecimals
 import com.example.jetweatherforecast.widgets.HumidityWindPressureRow
@@ -44,22 +47,33 @@ import com.example.jetweatherforecast.widgets.WeekDetailsColumn
 fun WeatherMainScreen(
     navController: NavController,
     mainViewModel: MainViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel= hiltViewModel(),
     city: String?
 ){
-    val weather= produceState(initialValue = DataOrException<Weather,Boolean,Exception>(), producer = {
-        value=mainViewModel.getWeather(city!!)
-    }).value
-    if(weather.loading == true){
-        CircularProgressIndicator()
+    val measurementList=settingsViewModel.measurementList.collectAsState().value
+    val measurement= remember {
+        mutableStateOf("imperial")
     }
-    else if(weather.data!=null){
-        MainScaffold(weather.data!!,navController)
+    val isImperial= remember {
+        mutableStateOf(true)
+    }
+    if(!measurementList.isNullOrEmpty()) {
+        measurement.value=measurementList[0].measurement.split(" ")[0].lowercase()
+        isImperial.value=measurement.value=="imperial"
+    val weather= produceState(initialValue = DataOrException<Weather,Boolean,Exception>(), producer = {
+        value=mainViewModel.getWeather(city!!,measurement=measurement.value)
+    }).value
+        if (weather.loading == true) {
+            CircularProgressIndicator()
+        } else if (weather.data != null) {
+            MainScaffold(weather.data!!, navController,isImperial=isImperial.value)
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScaffold(weather:Weather,navController: NavController) {
+private fun MainScaffold(weather: Weather, navController: NavController, isImperial: Boolean) {
     ViewModelProvider(LocalContext.current as MainActivity)[FavouriteViewModel::class.java]
     Scaffold(
         topBar = {
@@ -70,13 +84,14 @@ private fun MainScaffold(weather:Weather,navController: NavController) {
 
     ) {
         MainContent(data=weather,
+            isImperial=isImperial
             //modifier = Modifier.padding(it)
         )
     }
 }
 
 @Composable
-fun MainContent(data: Weather,modifier: Modifier=Modifier) {
+fun MainContent(data: Weather,modifier: Modifier=Modifier,isImperial: Boolean) {
     val weatherImageUrl="https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}.png"
     Log.d("url",weatherImageUrl)
     Column(
@@ -111,7 +126,7 @@ fun MainContent(data: Weather,modifier: Modifier=Modifier) {
                 Text(text=data.list[0].weather[0].description, style = MaterialTheme.typography.headlineMedium, fontStyle = FontStyle.Italic)
             }
         }
-        HumidityWindPressureRow(data)
+        HumidityWindPressureRow(data,isImperial=isImperial)
         Divider()
         SunriseAndSunsetRow(data.list[0].sunrise,data.list[0].sunset)
         WeekDetailsColumn(weekDetails = data.list)

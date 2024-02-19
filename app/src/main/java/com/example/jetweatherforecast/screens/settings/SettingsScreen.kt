@@ -43,9 +43,6 @@ fun SettingsScreen(
     }
     val measurementList= arrayOf("Imperial (F)","Metric (C)")
     val choiceFromDB=settingsViewModel.measurementList.collectAsState().value
-    remember {
-        mutableStateOf(0)
-    }
     val defaultChoice=if(choiceFromDB.isNullOrEmpty()) measurementList[0]
     else choiceFromDB[0].measurement
     val choiceState= remember {
