@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,23 +38,32 @@ fun SettingsScreen(
     settingsViewModel: SettingsViewModel= hiltViewModel(),
     navController: NavController
 ){
+    val unitToggleState= remember {
+        mutableStateOf(false)
+    }
+    val measurementList= arrayOf("Imperial (F)","Metric (C)")
+    val choiceFromDB=settingsViewModel.measurementList.collectAsState().value
+    remember {
+        mutableStateOf(0)
+    }
+    val defaultChoice=if(choiceFromDB.isNullOrEmpty()) measurementList[0]
+    else choiceFromDB[0].measurement
+    val choiceState= remember {
+        mutableStateOf(defaultChoice)
+    }
     Scaffold(
         topBar = {
             WeatherAppBar(
                 navController = navController,
                 title = "Settings Screen",
                 icon= Icons.Default.ArrowBack,
-                isMainScreen = false
+                isMainScreen = false,
+                onButtonClicked = {
+                    navController.popBackStack()
+                }
             )
         }
     ) {
-        val unitToggleState= remember {
-            mutableStateOf(false)
-        }
-        val measurementList= arrayOf("Imperial (F)","Metric (C)")
-        val choiceState= remember {
-            mutableStateOf("")
-        }
         Surface(modifier = Modifier
             .padding(it)
             .fillMaxSize()) {
