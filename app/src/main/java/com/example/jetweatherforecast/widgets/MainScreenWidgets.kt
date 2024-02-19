@@ -38,7 +38,7 @@ import com.example.jetweatherforecast.utils.formatDateTime
 import com.example.jetweatherforecast.utils.formatDecimals
 
 @Composable
-fun HumidityWindPressureRow(data: Weather) {
+fun HumidityWindPressureRow(data: Weather, isImperial: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +64,7 @@ fun HumidityWindPressureRow(data: Weather) {
                 painter = painterResource(id = R.drawable.wind),
                 contentDescription = "wind icon", modifier = Modifier.size(20.dp)
             )
-            Text(text = " ${data.list[0].speed} mph", style = MaterialTheme.typography.bodySmall)
+            Text(text = " ${formatDecimals(data.list[0].speed)}${if(isImperial) "mph" else "m/s"}", style = MaterialTheme.typography.bodySmall)
         }
     }
 }
