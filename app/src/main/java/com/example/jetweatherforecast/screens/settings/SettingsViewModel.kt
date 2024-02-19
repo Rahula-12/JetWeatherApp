@@ -15,12 +15,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(private val weatherDBRepository: WeatherDBRepository):ViewModel() {
-    private val _measurementList: MutableStateFlow<List<Favourite>> = MutableStateFlow(emptyList())
+    private val _measurementList: MutableStateFlow<List<Measurement>> = MutableStateFlow(emptyList())
     val measurementList=_measurementList.asStateFlow()
 
     init {
         viewModelScope.launch {
-            weatherDBRepository.getAllFavourites().collectLatest {
+            weatherDBRepository.getAllMeasurements().collectLatest {
                 _measurementList.value=it
             }
         }
